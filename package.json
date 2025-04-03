@@ -8,15 +8,22 @@
     "start": "open index.html",
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "postinstall": "node .scripts/badge.js"
+    "postinstall": "node .scripts/badge.js",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
   },
-
-  "jest": {  
-    "testEnvironment": "node",  
-    "transform": {},  
-    "moduleFileExtensions": ["js", "json", "jsx", "ts", "tsx", "node"]  
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "jsx",
+      "ts",
+      "tsx",
+      "node"
+    ]
   },
-  
   "author": "Yahya Gilany <gilanyym@ucmail.uc.edu>",
   "license": "UNLICENSED",
   "devDependencies": {
@@ -24,11 +31,13 @@
     "@babel/preset-env": "^7.9.5",
     "@eslint/js": "^9.23.0",
     "@testing-library/dom": "^7.31.0",
-    "@testing-library/jest-dom": "^5.8.0",
+    "@testing-library/jest-dom": "^5.17.0",
     "@types/jest": "^25.2.3",
+    "cypress": "^14.2.1",
     "directory-tree": "^2.2.4",
     "eslint": "^9.23.0",
     "globals": "^16.0.0",
+    "http-server": "^14.1.1",
     "jest": "^26.0.1",
     "line-replace": "^2.0.1",
     "lodash": "^4.17.15",

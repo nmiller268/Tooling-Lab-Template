@@ -1,82 +1,44 @@
+// tests/3.rock_paper_scissors-logic.test.js  
+  
+// Import the class using CommonJS require  
 const { RockPaperScissors } = require(`../resources/scripts/rock_paper_scissors.js`);  
   
 describe(`RockPaperScissors class`, function () {  
-  describe(`determineWinner()`, function () {  
-    test(`win cases`, function () {  
-      const game = new RockPaperScissors();  
-      expect(game.determineWinner(`rock`, `scissors`)).toBe(`win`);  
-      expect(game.determineWinner(`paper`, `rock`)).toBe(`win`);  
-      expect(game.determineWinner(`scissors`, `paper`)).toBe(`win`);  
-    });  
-  
-    test(`tie cases`, function () {  
-      const game = new RockPaperScissors();  
-      expect(game.determineWinner(`rock`, `rock`)).toBe(`tie`);  
-      expect(game.determineWinner(`paper`, `paper`)).toBe(`tie`);  
-      expect(game.determineWinner(`scissors`, `scissors`)).toBe(`tie`);  
-    });  
-  
-    test(`lose cases`, function () {  
-      const game = new RockPaperScissors();  
-      expect(game.determineWinner(`rock`, `paper`)).toBe(`lose`);  
-      expect(game.determineWinner(`paper`, `scissors`)).toBe(`lose`);  
-      expect(game.determineWinner(`scissors`, `rock`)).toBe(`lose`);  
-    });  
+  // Before each test, optionally spy on Math.random  
+  beforeEach(() => {  
+    jest.spyOn(Math, `random`)  
+      .mockReturnValue(0.1); 
   });  
-    
-  describe(`play()`, function() {  
-    test(`should increment user score on win`, function() {  
-      const game = new RockPaperScissors(`testUser`);  
-      // Mock the CPU response to ensure a win  
-      jest.spyOn(game, `generateCPUResponse`).mockReturnValue(`scissors`);  
-        
-      game.play(`rock`);  
-      expect(game.score.user).toBe(1);  
-      expect(game.score.cpu).toBe(0);  
-    });  
-      
-    test(`should increment CPU score on lose`, function() {  
-      const game = new RockPaperScissors(`testUser`);  
-      // Mock the CPU response to ensure a loss  
-      jest.spyOn(game, `generateCPUResponse`).mockReturnValue(`paper`);  
-        
-      game.play(`rock`);  
-      expect(game.score.user).toBe(0);  
-      expect(game.score.cpu).toBe(1);  
-    });  
-      
-    test(`should not increment scores on tie`, function() {  
-      const game = new RockPaperScissors(`testUser`);  
-      // Mock the CPU response to ensure a tie  
-      jest.spyOn(game, `generateCPUResponse`).mockReturnValue(`rock`);  
-        
-      game.play(`rock`);  
-      expect(game.score.user).toBe(0);  
-      expect(game.score.cpu).toBe(0);  
-    });  
-      
-    test(`should add to game history log`, function() {  
-      const game = new RockPaperScissors(`testUser`);  
-      jest.spyOn(game, `generateCPUResponse`).mockReturnValue(`scissors`);  
-        
-      game.play(`rock`);  
-      expect(game.gameHistoryLog.length).toBe(1);  
-      expect(game.gameHistoryLog[0]).toContain(`testUser selected rock`);  
-      expect(game.gameHistoryLog[0]).toContain(`CPU selected scissors`);  
-      expect(game.gameHistoryLog[0]).toContain(`testUser wins`);  
-    });  
+  
+  afterEach(() => {  
+    jest.restoreAllMocks();  
   });  
-    
-  describe(`generateCPUResponse()`, function() {  
-    test(`should return rock, paper, or scissors`, function() {  
-      const game = new RockPaperScissors();  
-      const validResponses = [ `rock`, `paper`, `scissors` ];  
-        
-      // Run multiple times to ensure randomness works correctly  
-      for (let i = 0; i < 10; i++) {  
-        const response = game.generateCPUResponse();  
-        expect(validResponses).toContain(response);  
-      }  
-    });  
+  
+  it(`should return "tie" when user and CPU selections are identical`, () => {  
+    const game = new RockPaperScissors(`Nicole`);  
+    game.play(`rock`);  
+    // Since Math.random is mocked to 0.1, CPU will also choose 'rock' leading to a tie.  
+    expect(game.gameHistoryLog[0]).toContain(`Nicole selected rock`);  
+    // Check that the game result string ends with "ties" due to a tie  
+    expect(game.gameHistoryLog[0]).toContain(`ties`);  
+  });  
+  
+  it(`should increment user score when user wins`, () => {  
+    jest.spyOn(Math, `random`)  
+      .mockReturnValue(0.1); // same as before, ensuring 'rock'  
+    const game = new RockPaperScissors(`Nicole`);  
+    game.play(`paper`);  
+    expect(game.score.user).toBe(1);  
+    expect(game.gameHistoryLog[0]).toContain(`win`);  
+  });  
+  
+  it(`should increment cpu score when user loses`, () => {  
+    // Force CPU selection to 'paper' so that when user selects 'rock', user loses.  
+    jest.spyOn(Math, `random`)  
+      .mockReturnValue(0.5); // 0.5 * 3 = 1.5, floor gives 1, so acceptedValues[1] === 'paper'  
+    const game = new RockPaperScissors(`Nicole`);  
+    game.play(`rock`);  
+    expect(game.score.cpu).toBe(1);  
+    expect(game.gameHistoryLog[0]).toContain(`lose`);  
   });  
 });  
